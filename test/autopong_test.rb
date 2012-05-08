@@ -115,7 +115,7 @@ describe Game do
       @game.set_server(@p2)
       @game.state.must_equal :new
 
-      # first point
+      # 1: p2 serves, receives, fails to send it back
       @game.ping(1)
       @game.state.must_equal :progress
       @game.ping(0)
@@ -126,19 +126,19 @@ describe Game do
       @game.scores.must_equal [1, 0]
       @game.current_server.must_equal @p2
 
-      # second point
+      # 2: p2 serves, p1 fails to send it back
       @game.ping(1)
       @game.ping(0)
       @game.ping(0)
       @game.scores.must_equal [1, 1]
       @game.current_server.must_equal @p1
 
-      # third point, let
+      # 3: p1 serves let
       lambda { @game.ping(0, true) }.must_raise(Let)
       @game.scores.must_equal [1, 1]
       @game.current_server.must_equal @p1
 
-      # third point
+      # 3: p1 serves, gets back, fails to return
       @game.ping(0)
       @game.ping(1)
       @game.ping(0)
@@ -146,18 +146,18 @@ describe Game do
       @game.scores.must_equal [1, 2]
       @game.current_server.must_equal @p1
 
-      # fourth, p1 serves out
+      # 4: p1 serves out
       @game.out
       @game.scores.must_equal [1, 3]
       @game.current_server.must_equal @p2
 
-      # fifth, p2 serves out (after bouncing on his side)
+      # 5: p2 serves out (after bouncing on his side)
       @game.ping(1)
       @game.out
       @game.scores.must_equal [2, 3]
       @game.current_server.must_equal @p2
 
-      # sixth, p2 serves and p1 returns out
+      # 6: p2 serves and p1 returns out
       @game.ping(1)
       @game.ping(0)
       @game.out
