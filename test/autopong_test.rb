@@ -47,6 +47,14 @@ describe Game do
         lambda { @game.ping(0, true) }.must_raise(Let)
       end
     end
+
+    describe "the ball goes out" do
+      before { @game.out }
+
+      it "is a score for the other player" do
+        @game.scores.must_equal [0, 1]
+      end
+    end
   end
 
   describe "on a game in progress" do
@@ -88,6 +96,18 @@ describe Game do
         @game.ping(1, true) # should not raise
       end
     end
+
+    describe "the ball goes out" do
+      before { @game.out }
+
+      it "is a point for the other player" do
+        @game.scores.must_equal [0, 1]
+      end
+
+      it "goes back to state new" do
+        @game.state.must_equal :new
+      end
+    end
   end
 
   describe "integration test" do
@@ -126,12 +146,23 @@ describe Game do
       @game.scores.must_equal [1, 2]
       @game.current_server.must_equal @p1
 
-      # fourth
-      @game.ping(0)
-      @game.ping(1)
-      @game.ping(1)
-      @game.scores.must_equal [2, 2]
+      # fourth, p1 serves out
+      @game.out
+      @game.scores.must_equal [1, 3]
       @game.current_server.must_equal @p2
+
+      # fifth, p2 serves out (after bouncing on his side)
+      @game.ping(1)
+      @game.out
+      @game.scores.must_equal [2, 3]
+      @game.current_server.must_equal @p2
+
+      # sixth, p2 serves and p1 returns out
+      @game.ping(1)
+      @game.ping(0)
+      @game.out
+      @game.scores.must_equal [2, 4]
+      @game.current_server.must_equal @p1
     end
   end
 end

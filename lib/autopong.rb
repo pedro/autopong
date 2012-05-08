@@ -30,12 +30,23 @@ module Autopong
         # fail, dude let the ball bounce on his side twice
         if players[side] == current_player
           score_point(other_player)
-          self.state = :new
 
         # good move, now he has to send it back
         else
           self.current_player = other_player
         end
+      end
+    end
+
+    # the ball went outside the table
+    def out
+      case state
+      when :new
+        self.serves += 1
+        score_point(other_player)
+
+      when :progress
+        score_point(other_player)
       end
     end
 
@@ -54,6 +65,7 @@ module Autopong
     def score_point(player)
       index = players.index(player)
       scores[index] += 1
+      self.state = :new
 
       if serves == 2
         self.serves = 0
