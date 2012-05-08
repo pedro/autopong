@@ -38,38 +38,51 @@ describe Game do
       end
     end
 
-    describe "on a game in progress" do
-      before do
-        @game.state = :progress
-        @game.current_player = @p1
+    describe "when the ball hits the net" do
+      it "raises a let" do
+        lambda { @game.ping(0, true) }.must_raise(Let)
+      end
+    end
+  end
+
+
+  describe "on a game in progress" do
+    before do
+      @game.state = :progress
+      @game.current_player = @p1
+    end
+
+    describe "when the ball hits the same side again" do
+      before { @game.ping(0) }
+
+      it "considers it a score for the other player" do
+        @game.scores.must_equal [0, 1]
       end
 
-      describe "when the ball hits the same side again" do
-        before { @game.ping(0) }
+      it "goes back to state new" do
+        @game.state.must_equal :new
+      end
+    end
 
-        it "considers it a score for the other player" do
-          @game.scores.must_equal [0, 1]
-        end
+    describe "when the ball hits the other side" do
+      before { @game.ping(1) }
 
-        it "goes back to state new" do
-          @game.state.must_equal :new
-        end
+      it "keeps the game in progress" do
+        @game.state.must_equal :progress
       end
 
-      describe "when the ball hits the other side" do
-        before { @game.ping(1) }
+      it "flips the current player" do
+        @game.current_player.must_equal @p1
+      end
 
-        it "keeps the game in progress" do
-          @game.state.must_equal :progress
-        end
+      it "doesn't change the score" do
+        @game.scores.must_equal [0, 0]
+      end
+    end
 
-        it "flips the current player" do
-          @game.current_player.must_equal @p1
-        end
-
-        it "doesn't change the score" do
-          @game.scores.must_equal [0, 0]
-        end
+    describe "when the ball hits the net" do
+      it "ignores" do
+        @game.ping(1, true) # should not raise
       end
     end
   end

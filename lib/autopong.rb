@@ -1,5 +1,6 @@
 module Autopong
   class Foul < StandardError; end
+  class Let  < StandardError; end
 
   class Game
     attr_accessor :players, :scores, :current_player, :state
@@ -12,12 +13,13 @@ module Autopong
     end
 
     # the ball bounced on a side of the table
-    def ping(side)
+    def ping(side, net=false)
       other = other_player(side)
 
       case state
       when :new
         raise Foul if players[side] != current_player
+        raise Let  if net
         self.current_player = other
         self.state = :progress
 
