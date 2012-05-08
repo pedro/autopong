@@ -5,6 +5,7 @@ describe Game do
     @p1 = Player.new("p1")
     @p2 = Player.new("p2")
     @game = Game.new(@p1, @p2)
+    @game.set_server(@p1)
   end
 
   it "starts on state serve" do
@@ -47,11 +48,37 @@ describe Game do
     end
   end
 
-  describe "on a serve" do
-    before do
-      @game.set_server(@p1)
+  describe "scoring" do
+    it "increases the player score" do
+      @game.score_point(@p1)
+      @game.scores.must_equal [1, 0]
     end
 
+    it "sets the state to ended if there's a winner" do
+      @game.scores = [8, 10]
+      @game.score_point(@p2)
+      @game.state.must_equal :ended
+    end
+
+    it "returns state to serve otherwise" do
+      @game.score_point(@p1)
+      @game.state.must_equal :serve
+    end
+
+    it "changes to the next server after 2 serves" do
+      @game.serves = 1
+      @game.score_point(@p2)
+      @game.current_server.must_equal @p2
+    end
+
+    it "changes to the next server after every serve after 10x10" do
+      @game.scores = [10, 10]
+      @game.score_point(@p1)
+      @game.current_server.must_equal @p2
+    end
+  end
+
+  describe "on a serve" do
     describe "when the ball starts in the wrong side of the table" do
       it "raises a foul" do
         lambda { @game.ping(1) }.must_raise(Foul)
@@ -82,10 +109,7 @@ describe Game do
   end
 
   describe "on a game in progress" do
-    before do
-      @game.state = :progress
-      @game.set_server(@p1)
-    end
+    before { @game.state = :progress }
 
     describe "when the ball hits the same side again" do
       before { @game.ping(0) }

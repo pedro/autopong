@@ -72,7 +72,7 @@ module Autopong
       self.current_player = current_server
       self.serves += 1
 
-      if serves == 2
+      if serves == 2 || (serves == 1 && scores.all? { |score| score >= 10 })
         self.serves = 0
         set_server(other_server)
       end
