@@ -12,7 +12,8 @@ begin
   puts "current match : #{@p1} vs #{@p2}"
   puts "serve         : #{@game.current_server}"
 
-  puts "interactive mode ==="
+  puts
+  puts "interactive mode"
   puts "  s : left (#{@p1} side)"
   puts "  d : out"
   puts "  f : right (#{@p2} side)"

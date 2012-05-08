@@ -42,13 +42,15 @@ bin/game "John Malkovich" "Edward Norton"
 
 current match : John Malkovich vs Edward Norton
 serve         : John Malkovich
-interactive mode ===
+
+interactive mode
   s : left (John Malkovich side)
   d : out
   f : right (Edward Norton side)
 -> s
    good move from John Malkovich
 ```
+
 
 About
 -----
