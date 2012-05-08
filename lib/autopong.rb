@@ -3,22 +3,27 @@ module Autopong
   class Let  < StandardError; end
 
   class Game
-    attr_accessor :players, :scores, :current_server, :current_player, :state
+    attr_accessor :players, :scores, :current_server, :serves, :current_player, :state
 
     def initialize(p1, p2)
       @players = [p1, p2]
       @scores  = [0, 0]
       @state   = :new
+      @serves  = 0
       set_server(players.sample)
     end
 
     # the ball bounced on a side of the table
     def ping(side, net=false)
+      raise ArgumentError, "invalid side: #{side}. Valid values are 0 or 1" \
+        unless [0, 1].include?(side)
+
       case state
       when :new
         raise Foul if players[side] != current_server
         raise Let  if net
-        self.current_player = other_player
+        self.serves += 1
+        #self.current_player = other_player
         self.state = :progress
 
       when :progress
@@ -42,9 +47,18 @@ module Autopong
       (players - [current_player]).first
     end
 
+    def other_server
+      (players - [current_server]).first
+    end
+
     def score_point(player)
       index = players.index(player)
       scores[index] += 1
+
+      if serves == 2
+        self.serves = 0
+        set_server(other_server)
+      end
     end
 
     def debug

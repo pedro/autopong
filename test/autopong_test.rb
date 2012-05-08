@@ -21,7 +21,7 @@ describe Game do
 
   describe "on a new game" do
     before do
-      @game.current_server = @p1
+      @game.set_server(@p1)
     end
 
     describe "when the ball starts in the wrong side of the table" do
@@ -37,8 +37,8 @@ describe Game do
         @game.state.must_equal :progress
       end
 
-      it "changes current player" do
-        @game.current_player.must_equal @p2
+      it "accumulates a serve" do
+        @game.serves.must_equal 1
       end
     end
 
@@ -52,7 +52,7 @@ describe Game do
   describe "on a game in progress" do
     before do
       @game.state = :progress
-      @game.current_player = @p1
+      @game.set_server(@p1)
     end
 
     describe "when the ball hits the same side again" do
@@ -87,6 +87,51 @@ describe Game do
       it "ignores" do
         @game.ping(1, true) # should not raise
       end
+    end
+  end
+
+  describe "integration test" do
+    it "handles a full match" do
+      @game.set_server(@p2)
+      @game.state.must_equal :new
+
+      # first point
+      @game.ping(1)
+      @game.state.must_equal :progress
+      @game.ping(0)
+      @game.state.must_equal :progress
+      @game.ping(1)
+      @game.state.must_equal :progress
+      @game.ping(1) # failed to return
+      @game.scores.must_equal [1, 0]
+      @game.current_server.must_equal @p2
+
+      # second point
+      @game.ping(1)
+      @game.ping(0)
+      @game.ping(0)
+      @game.scores.must_equal [1, 1]
+      @game.current_server.must_equal @p1
+
+      # third point, let
+      lambda { @game.ping(0, true) }.must_raise(Let)
+      @game.scores.must_equal [1, 1]
+      @game.current_server.must_equal @p1
+
+      # third point
+      @game.ping(0)
+      @game.ping(1)
+      @game.ping(0)
+      @game.ping(0)
+      @game.scores.must_equal [1, 2]
+      @game.current_server.must_equal @p1
+
+      # fourth
+      @game.ping(0)
+      @game.ping(1)
+      @game.ping(1)
+      @game.scores.must_equal [2, 2]
+      @game.current_server.must_equal @p2
     end
   end
 end
