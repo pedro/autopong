@@ -19,6 +19,34 @@ describe Game do
     @game.current_server.must_equal @game.current_player
   end
 
+  describe "winner" do
+    describe "when the score is below 11" do
+      it "doesn't have a winner" do
+        @game.scores = [2, 10]
+        @game.winner.must_be_nil
+      end
+    end
+
+    describe "when a player reached 11 and the other is below 10" do
+      it "declares that player the winner" do
+        @game.scores = [8, 11]
+        @game.winner.must_equal @p2
+      end
+    end
+
+    describe "when both players are above 10" do
+      it "declares the winner a player that gets two points in the lead" do
+        @game.scores = [10, 12]
+        @game.winner.must_equal @p2
+      end
+
+      it "doesn't have a winner for a smaller difference" do
+        @game.scores = [17, 18]
+        @game.winner.must_be_nil
+      end
+    end
+  end
+
   describe "on a new game" do
     before do
       @game.set_server(@p1)

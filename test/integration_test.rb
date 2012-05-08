@@ -57,5 +57,32 @@ describe "Integration test" do
     @game.out
     @game.scores.must_equal [2, 4]
     @game.current_server.must_equal @p1
+
+    # 7 on - p1 gets drunk
+    @game.out
+    @game.scores.must_equal [2, 5]
+    @game.out
+    @game.scores.must_equal [2, 6]
+
+    @game.ping(1)
+    @game.ping(0)
+    @game.out
+    @game.scores.must_equal [2, 7]
+    @game.ping(1)
+    @game.ping(0)
+    @game.out
+    @game.scores.must_equal [2, 8]
+
+    @game.out
+    @game.scores.must_equal [2, 9]
+    @game.out
+    @game.scores.must_equal [2, 10]
+
+    @game.ping(1)
+    @game.ping(0)
+    @game.out
+    @game.scores.must_equal [2, 11]
+    @game.winner.must_equal @p2
+    @game.state.must_equal :ended
   end
 end

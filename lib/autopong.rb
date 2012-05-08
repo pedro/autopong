@@ -61,14 +61,35 @@ module Autopong
 
     def score_point(player)
       index = players.index(player)
-      scores[index] += 1
+      score = scores[index] += 1
+
+      if winner
+        self.state = :ended
+        return
+      end
+
       self.state = :new
       self.serves += 1
+      self.current_player = current_server
 
       if serves == 2
         self.serves = 0
         set_server(other_server)
       end
+    end
+
+    def winner
+      low, high = scores.sort
+      candidate = players[scores.index(high)]
+
+      return nil if high < 11
+      return candidate if high == 11 && low < 10
+      return candidate if (high - low) >= 2
+    end
+
+    def set_winner(player)
+      self.winner = player
+      self.state  = :ended
     end
 
     def debug
