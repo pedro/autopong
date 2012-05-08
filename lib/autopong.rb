@@ -8,7 +8,7 @@ module Autopong
     def initialize(p1, p2)
       @players = [p1, p2]
       @scores  = [0, 0]
-      @state   = :new
+      @state   = :serve
       @serves  = 0
       set_server(players.sample)
     end
@@ -19,7 +19,7 @@ module Autopong
         unless [0, 1].include?(side)
 
       case state
-      when :new
+      when :serve
         raise Foul if players[side] != current_server
         raise Let  if net
         self.state = :progress
@@ -39,7 +39,7 @@ module Autopong
     # the ball went outside the table
     def out
       case state
-      when :new
+      when :serve
         score_point(other_player)
 
       when :progress
@@ -68,9 +68,9 @@ module Autopong
         return
       end
 
-      self.state = :new
-      self.serves += 1
+      self.state = :serve
       self.current_player = current_server
+      self.serves += 1
 
       if serves == 2
         self.serves = 0

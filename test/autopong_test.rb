@@ -7,8 +7,8 @@ describe Game do
     @game = Game.new(@p1, @p2)
   end
 
-  it "starts on state new" do
-    @game.state.must_equal :new
+  it "starts on state serve" do
+    @game.state.must_equal :serve
   end
 
   it "has a current player randomly picked to start the game" do
@@ -47,7 +47,7 @@ describe Game do
     end
   end
 
-  describe "on a new game" do
+  describe "on a serve" do
     before do
       @game.set_server(@p1)
     end
@@ -94,8 +94,8 @@ describe Game do
         @game.scores.must_equal [0, 1]
       end
 
-      it "goes back to state new" do
-        @game.state.must_equal :new
+      it "goes back to state serve" do
+        @game.state.must_equal :serve
       end
     end
 
@@ -128,8 +128,8 @@ describe Game do
         @game.scores.must_equal [0, 1]
       end
 
-      it "goes back to state new" do
-        @game.state.must_equal :new
+      it "goes back to state serve" do
+        @game.state.must_equal :serve
       end
     end
   end

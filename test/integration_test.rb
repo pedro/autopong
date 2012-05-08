@@ -7,7 +7,7 @@ describe "Integration test" do
 
   it "handles a full match" do
     @game.set_server(@p2)
-    @game.state.must_equal :new
+    @game.state.must_equal :serve
 
     # 1: p2 serves, receives, fails to send it back
     @game.ping(1)
