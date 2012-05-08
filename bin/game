@@ -33,7 +33,13 @@ begin
       else
         puts "    #{@game.current_player} FAILED"
         puts "    score is #{@game.scores.join(' vs ')}"
+      end
+
+      if @game.state == :serve
         puts "    #{@game.current_server} should serve"
+      elsif @game.state == :ended
+        puts "    AND TEH WINNER IS #{@game.winner}"
+        exit 0
       end
     rescue Foul
       puts " !  FOUL: #{@game.current_server} should serve"
