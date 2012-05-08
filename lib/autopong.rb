@@ -22,7 +22,6 @@ module Autopong
       when :new
         raise Foul if players[side] != current_server
         raise Let  if net
-        self.serves += 1
         self.state = :progress
 
       when :progress
@@ -41,7 +40,6 @@ module Autopong
     def out
       case state
       when :new
-        self.serves += 1
         score_point(other_player)
 
       when :progress
@@ -65,6 +63,7 @@ module Autopong
       index = players.index(player)
       scores[index] += 1
       self.state = :new
+      self.serves += 1
 
       if serves == 2
         self.serves = 0

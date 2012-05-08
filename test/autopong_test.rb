@@ -36,10 +36,6 @@ describe Game do
       it "moves state to progress" do
         @game.state.must_equal :progress
       end
-
-      it "accumulates a serve" do
-        @game.serves.must_equal 1
-      end
     end
 
     describe "when the ball hits the net" do
