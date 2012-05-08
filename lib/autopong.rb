@@ -1,15 +1,19 @@
+require "stringio"
+require "logger"
+
 module Autopong
   class Foul < StandardError; end
   class Let  < StandardError; end
 
   class Game
-    attr_accessor :players, :scores, :current_server, :serves, :current_player, :state
+    attr_accessor :players, :scores, :current_server, :serves, :current_player, :state, :logger
 
-    def initialize(p1, p2)
+    def initialize(p1, p2, logger=nil)
       @players = [p1, p2]
       @scores  = [0, 0]
       @state   = :serve
       @serves  = 0
+      @logger  = logger || Logger.new(StringIO.new)
       set_server(players.sample)
     end
 
@@ -23,28 +27,26 @@ module Autopong
         raise Foul if players[side] != current_server
         raise Let  if net
         self.state = :progress
+        true
 
       when :progress
         # fail, dude let the ball bounce on his side twice
         if players[side] == current_player
           score_point(other_player)
+          false
 
         # good move, now he has to send it back
         else
           self.current_player = other_player
+          true
         end
       end
     end
 
     # the ball went outside the table
     def out
-      case state
-      when :serve
-        score_point(other_player)
-
-      when :progress
-        score_point(other_player)
-      end
+      score_point(other_player)
+      return false
     end
 
     def set_server(player)

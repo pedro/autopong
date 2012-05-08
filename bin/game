@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+require File.expand_path("../../lib/autopong", __FILE__)
+include Autopong
+
+abort("usage: game [p1] [p2]") unless ARGV.size == 2
+
+begin
+  @p1   = Player.new(ARGV[0])
+  @p2   = Player.new(ARGV[1])
+  @game = Game.new(@p1, @p2)
+
+  puts "current match : #{@p1} vs #{@p2}"
+  puts "serve         : #{@game.current_server}"
+
+  puts "interactive mode ==="
+  puts "  a : left (#{@p1} side)"
+  puts "  s : out"
+  puts "  d : right (#{@p2} side)"
+
+  conversion = {
+    "a" => [:ping, 0],
+    "d" => [:ping, 1],
+    "s" => [:out],
+  }
+
+  while true do
+    print " -> "
+    char = STDIN.gets.strip
+    raise "invalid entry: #{char}" unless spec = conversion[char]
+    begin
+      if @game.send(*spec)
+        puts "    good move from #{@game.current_player}"
+      else
+        puts "    #{@game.current_player} FAILED"
+        puts "    score is #{@game.scores.join(' vs ')}"
+        puts "    #{@game.current_server} should serve"
+      end
+    rescue Foul
+      puts " !  FOUL: #{@game.current_server} should serve"
+    rescue Let
+      puts " !  LET: Serve again, #{@game.current_server}"
+    end
+  end
+rescue Interrupt
+  puts "KTHXBYE"
+end
