@@ -13,14 +13,14 @@ begin
   puts "serve         : #{@game.current_server}"
 
   puts "interactive mode ==="
-  puts "  a : left (#{@p1} side)"
-  puts "  s : out"
-  puts "  d : right (#{@p2} side)"
+  puts "  s : left (#{@p1} side)"
+  puts "  d : out"
+  puts "  f : right (#{@p2} side)"
 
   conversion = {
-    "a" => [:ping, 0],
-    "d" => [:ping, 1],
-    "s" => [:out],
+    "s" => [:ping, 0],
+    "f" => [:ping, 1],
+    "d" => [:out],
   }
 
   while true do
