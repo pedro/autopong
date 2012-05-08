@@ -2,8 +2,8 @@ require "test_helper"
 
 describe Game do
   before do
-    @p1 = Player.new("John Malkovich")
-    @p2 = Player.new("Edward Norton")
+    @p1 = Player.new("p1")
+    @p2 = Player.new("p2")
     @game = Game.new(@p1, @p2)
   end
 
@@ -12,12 +12,16 @@ describe Game do
   end
 
   it "has a current player randomly picked to start the game" do
-    [@p1, @p2].must_include @game.current_player
+    [@p1, @p2].must_include @game.current_server
+  end
+
+  it "also considers the player serving to be the current" do
+    @game.current_server.must_equal @game.current_player
   end
 
   describe "on a new game" do
     before do
-      @game.current_player = @p1
+      @game.current_server = @p1
     end
 
     describe "when the ball starts in the wrong side of the table" do
@@ -45,7 +49,6 @@ describe Game do
     end
   end
 
-
   describe "on a game in progress" do
     before do
       @game.state = :progress
@@ -72,7 +75,7 @@ describe Game do
       end
 
       it "flips the current player" do
-        @game.current_player.must_equal @p1
+        @game.current_player.must_equal @p2
       end
 
       it "doesn't change the score" do
