@@ -23,7 +23,6 @@ module Autopong
         raise Foul if players[side] != current_server
         raise Let  if net
         self.serves += 1
-        #self.current_player = other_player
         self.state = :progress
 
       when :progress
