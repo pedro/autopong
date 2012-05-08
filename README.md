@@ -1,8 +1,10 @@
-= Autopong
+Autopong
+========
 
 A Ruby engine implementing the rules of ping pong.
 
-=== Usage
+Usage
+-----
 
 Use as a backend for your game or whatever:
 
@@ -47,3 +49,9 @@ interactive mode ===
 -> s
    good move from John Malkovich
 ```
+
+About
+-----
+
+Written by Pedro Belo.
+Licensed as MIT.
