@@ -8,7 +8,7 @@ Usage
 
 Use as a backend for your game or whatever:
 
-```
+```ruby
 p1   = Autopong::Player.new("John Malkovich")
 p2   = Autopong::Player.new("Edward Norton")
 game = Autopong::Game.new(p1, p2)
