@@ -13,7 +13,7 @@ p1   = Autopong::Player.new("John Malkovich")
 p2   = Autopong::Player.new("Edward Norton")
 game = Autopong::Game.new(p1, p2)
 
-# the game will pick a random server
+# the game will pick a random player to serve
 puts "serve, #{game.current_server}"
 
 # ping means the ball hit the table
