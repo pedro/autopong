@@ -2,7 +2,7 @@ module Autopong
   class Foul < StandardError; end
 
   class Game
-    attr_accessor :players, :current_player, :state
+    attr_accessor :players, :scores, :current_player, :state
 
     def initialize(p1, p2)
       @players = [p1, p2]
@@ -13,12 +13,34 @@ module Autopong
 
     # the ball bounced on a side of the table
     def ping(side)
+      other = other_player(side)
+
       case state
       when :new
         raise Foul if players[side] != current_player
-        self.current_player = @players[(side + 1) % 2]
+        self.current_player = other
         self.state = :progress
+
+      when :progress
+        # fail, dude let the ball bounce on his side twice
+        if players[side] == current_player
+          score_point(other)
+          self.state = :new
+
+        # good move, now he has to send it back
+        else
+          self.current_player = other
+        end
       end
+    end
+
+    def other_player(side)
+      players[(side + 1) % 2]
+    end
+
+    def score_point(player)
+      index = players.index(player)
+      scores[index] += 1
     end
   end
 

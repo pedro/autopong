@@ -27,14 +27,49 @@ describe Game do
     end
 
     describe "when the ball starts in the right side" do
+      before { @game.ping(0) }
+
       it "moves state to progress" do
-        @game.ping(0)
         @game.state.must_equal :progress
       end
 
       it "changes current player" do
-        @game.ping(0)
         @game.current_player.must_equal @p2
+      end
+    end
+
+    describe "on a game in progress" do
+      before do
+        @game.state = :progress
+        @game.current_player = @p1
+      end
+
+      describe "when the ball hits the same side again" do
+        before { @game.ping(0) }
+
+        it "considers it a score for the other player" do
+          @game.scores.must_equal [0, 1]
+        end
+
+        it "goes back to state new" do
+          @game.state.must_equal :new
+        end
+      end
+
+      describe "when the ball hits the other side" do
+        before { @game.ping(1) }
+
+        it "keeps the game in progress" do
+          @game.state.must_equal :progress
+        end
+
+        it "flips the current player" do
+          @game.current_player.must_equal @p1
+        end
+
+        it "doesn't change the score" do
+          @game.scores.must_equal [0, 0]
+        end
       end
     end
   end
